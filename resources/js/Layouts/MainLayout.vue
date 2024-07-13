@@ -15,7 +15,7 @@ import { ref } from "vue";
 
 const timer = ref(0);
 
-setInterval(() => {
-    timer.value++;
-}, 1000);
+// setInterval(() => {
+//     timer.value++;
+// }, 1000);
 </script>
