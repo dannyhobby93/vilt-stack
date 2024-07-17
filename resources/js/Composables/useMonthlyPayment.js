@@ -1,16 +1,14 @@
 import { computed, isRef } from "vue";
 
-export const useMonthlyPayment = (inpTotal, inpInterestRate, inpDuration) => {
-    const total = isRef(inpTotal) ? inpTotal.value : inpTotal;
-    const interestRate = isRef(inpInterestRate)
-        ? inpInterestRate.value
-        : inpInterestRate;
-    const duration = isRef(inpDuration) ? inpDuration.value : inpDuration;
-
+export const useMonthlyPayment = (total, interestRate, duration) => {
     const monthlyPayment = computed(() => {
-        const principle = total;
-        const monthlyInterest = interestRate / 100 / 12;
-        const numberOfPaymentMonths = duration * 12;
+        const principle = isRef(total) ? total.value : total;
+        const monthlyInterest =
+            (isRef(interestRate) ? interestRate.value : interestRate) /
+            100 /
+            12;
+        const numberOfPaymentMonths =
+            (isRef(duration) ? duration.value : duration) * 12;
 
         return (
             (principle *
@@ -21,10 +19,16 @@ export const useMonthlyPayment = (inpTotal, inpInterestRate, inpDuration) => {
     });
 
     const totalPaid = computed(() => {
-        return duration * 12 * monthlyPayment.value;
+        return (
+            (isRef(duration) ? duration.value : duration) *
+            12 *
+            monthlyPayment.value
+        );
     });
 
-    const totalInterest = computed(() => totalPaid.value - total);
+    const totalInterest = computed(
+        () => totalPaid.value - (isRef(total) ? total.value : total)
+    );
 
     return { monthlyPayment, totalPaid, totalInterest };
 };
