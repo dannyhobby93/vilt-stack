@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Listing;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class ListingController extends Controller
+// class ListingController extends Controller
+class ListingController extends \Illuminate\Routing\Controller
 {
+    use AuthorizesRequests;
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+        $this->authorizeResource(Listing::class, 'listing');
+    }
     public function index()
     {
         return inertia(
@@ -22,7 +30,7 @@ class ListingController extends Controller
 
     public function store(Request $request)
     {
-        Listing::create(
+        $request->user()->listings()->create(
             $request->validate([
                 'beds' => 'required|integer|min:0|max:20',
                 'baths' => 'required|integer|min:0|max:20',
@@ -43,6 +51,11 @@ class ListingController extends Controller
     // public function show(string $id)
     public function show(Listing $listing)
     {
+        // if (Auth::user()->cannot('view', $listing)) {
+        //     abort(403);
+        // }
+        // Gate::authorize('view', $listing);
+
         return inertia(
             'Listing/Show',
             ['listing' => $listing]
