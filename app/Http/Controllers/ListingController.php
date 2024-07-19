@@ -15,11 +15,36 @@ class ListingController extends \Illuminate\Routing\Controller
         $this->middleware('auth')->except(['index', 'show']);
         $this->authorizeResource(Listing::class, 'listing');
     }
-    public function index()
+    public function index(Request $request)
     {
+        $filters = $request->only(
+            ['priceFrom', 'priceTo', 'beds', 'baths', 'areaFrom', 'areaTo']
+        );
+
+        // $query = Listing::orderByDesc('created_at')
+        //     ->when(
+        //         $filters['priceFrom'] ?? null,
+        //         fn($query, $value) => $query->where('price', '>=', $value)
+        //     )
+        //     ->when(
+        //         $filters['beds'] ?? null,
+        //         fn($query, $value) => $query->where('beds', (int) $value < 6 ? '=' : '>=', $value)
+        //     );
+
+        // if ($filters['priceFrom'] ?? null) {
+        //     $query->where('price', '>=', $filters['priceFrom']);
+        // }
+
         return inertia(
             'Listing/Index',
-            ['listings' => Listing::all()]
+            [
+                'filters' => $filters,
+                // 'listings' => $query
+                'listings' => Listing::latest()
+                    ->filter($filters)
+                    ->paginate(6)
+                    ->withQueryString()
+            ]
         );
     }
 
@@ -89,7 +114,7 @@ class ListingController extends \Illuminate\Routing\Controller
             ->route('listing.index')
             ->with('success', 'Listing was updated!');
     }
-    
+
     public function destroy(Listing $listing)
     {
         $listing->delete();
