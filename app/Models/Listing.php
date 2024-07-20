@@ -6,13 +6,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Listing extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     // $protected $fillable = ['beds', 'baths', 'arae'];
     protected $guarded = [];
+
+    protected $sortable = [
+        'price',
+        'created_at'
+    ];
 
     public function user(): BelongsTo
     {
@@ -50,6 +56,17 @@ class Listing extends Model
             ->when(
                 $filters['areaTo'] ?? null,
                 fn($query, $value) => $query->where('area', '<=', $value)
+            )
+            ->when(
+                $filters['deleted'] ?? null,
+                fn($query, $value) => $query->withTrashed()
+            )
+            ->when(
+                $filters['by'] ?? false,
+                fn($query, $value) =>
+                !in_array($value, $this->sortable) ?
+                $query :
+                $query->orderBy($value, $filters['order'] ?? 'desc')
             );
     }
 }
