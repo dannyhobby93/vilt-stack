@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class RealtorListingController extends Controller
 {
@@ -37,6 +38,8 @@ class RealtorListingController extends Controller
 
     public function show(Listing $listing)
     {
+        Gate::authorize('view', $listing);
+
         return inertia(
             'Realtor/Show',
             [
@@ -72,6 +75,8 @@ class RealtorListingController extends Controller
 
     public function edit(Listing $listing)
     {
+        Gate::authorize('update', $listing);
+
         return inertia(
             'Realtor/Edit',
             ['listing' => $listing]
@@ -80,6 +85,8 @@ class RealtorListingController extends Controller
 
     public function update(Request $request, Listing $listing)
     {
+        Gate::authorize('update', $listing);
+
         $listing->update(
             $request->validate([
                 'beds' => 'required|integer|min:0|max:20',
@@ -100,6 +107,7 @@ class RealtorListingController extends Controller
 
     public function destroy(Listing $listing)
     {
+        Gate::authorize('delete', $listing);
         // $listing->forceDelete();
         // $listing->delete();
         $listing->deleteOrFail();
@@ -111,6 +119,8 @@ class RealtorListingController extends Controller
 
     public function restore(Listing $listing)
     {
+        Gate::authorize('restore', $listing);
+
         $listing->restore();
 
         return redirect()

@@ -6,6 +6,7 @@ use App\Models\Listing;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ListingController extends Controller
 {
@@ -55,7 +56,9 @@ class ListingController extends Controller
         // if (Auth::user()->cannot('view', $listing)) {
         //     abort(403);
         // }
-        // Gate::authorize('view', $listing);
+        // Laravel 11 fix
+        Gate::authorize('view', $listing);
+
         $listing->load('images');
 
         $offer = !Auth::user() ? null : $listing->offers()->byMe()->first();
