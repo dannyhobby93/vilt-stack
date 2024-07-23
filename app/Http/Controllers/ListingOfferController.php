@@ -23,6 +23,6 @@ class ListingOfferController extends Controller
             new OfferMade($offer)
         );
 
-        return redirect()->back()->with('success', 'Offer was made!');
+        return back()->with('success', 'Offer was made!');
     }
 }

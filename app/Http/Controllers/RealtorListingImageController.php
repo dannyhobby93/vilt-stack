@@ -34,7 +34,7 @@ class RealtorListingImageController extends Controller
                     'filename' => $path
                 ]));
             }
-            return redirect()->back()->with('success', 'Image(s) uploaded!');
+            return back()->with('success', 'Image(s) uploaded!');
         } else {
             abort(415);
         }
@@ -46,6 +46,6 @@ class RealtorListingImageController extends Controller
         Storage::disk('public')->delete($image->filename);
         $image->delete();
 
-        return redirect()->back()->with('success', 'Image was deleted!');
+        return back()->with('success', 'Image was deleted!');
     }
 }
