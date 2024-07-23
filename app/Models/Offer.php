@@ -12,7 +12,6 @@ class Offer extends Model
 {
     use HasFactory;
 
-    // create or store
     protected $fillable = [
         'amount',
         'accepted_at',

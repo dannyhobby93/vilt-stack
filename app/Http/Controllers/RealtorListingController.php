@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Gate;
 
 class RealtorListingController extends Controller
 {
-    public function __construct()
-    {
-        // TODO: Fix this for version 11
-        // Automatically applies the ListingPolicy to this controller's actions
-        // $this->authorizeResource(Listing::class, 'listing');
-    }
     public function index(Request $request)
     {
         $filters = [
@@ -22,8 +16,6 @@ class RealtorListingController extends Controller
             ...$request->only(['by', 'order'])
         ];
 
-        // 1/0 true/false
-        // $request->boolean('deleted'); 
         return inertia('Realtor/Index', [
             'filters' => $filters,
             'listings' => Auth::user()
@@ -108,8 +100,7 @@ class RealtorListingController extends Controller
     public function destroy(Listing $listing)
     {
         Gate::authorize('delete', $listing);
-        // $listing->forceDelete();
-        // $listing->delete();
+
         $listing->deleteOrFail();
 
         return redirect()

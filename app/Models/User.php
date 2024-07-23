@@ -54,12 +54,4 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Offer::class, 'bidder_id');
     }
-
-    // protected function password(): Attribute
-    // {
-    //     return Attribute::make(
-    //         get: fn($value) => $value,
-    //         set: fn($value) => Hash::make($value)
-    //     );
-    // }
 }
